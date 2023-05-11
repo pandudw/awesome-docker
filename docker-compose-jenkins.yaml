@@ -1,0 +1,28 @@
+version: '3'
+services:
+  jenkins-blueocean:
+    container_name: jenkins-blueocean
+    image: myjenkins-blueocean:2.346.1-1
+    environment:
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: 1
+      JAVA_OPTS: "-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - jenkins-docker-certs:/certs/client:ro
+      - $HOME:/home
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    networks:
+      - jenkins
+    restart: on-failure
+
+networks:
+  jenkins:
+    external: true
+
+volumes:
+  jenkins-data:
+  jenkins-docker-certs:
